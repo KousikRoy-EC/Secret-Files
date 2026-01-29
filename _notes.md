@@ -2048,3 +2048,78 @@ int main() {
     func2(&p);  // changes p 
     return 0;
 }
+
+
+
+
+Static variable and all the global variables are stored in data segment of memory.
+
+
+If you define static int a; in a header file and include it in two different .c files, the compiler creates two completely separate variables named a.
+
+file.h 
+static int a;
+
+file1.c 
+#include "file.h"
+
+file2.c 
+#include "file.h"
+
+Changes to a in File 1 will not be reflected in File 2. Each file gets its own private copy.
+
+
+A device tree is a hardware description data structure passed to the Linux kernel at boot time, allowing the kernel to support multiple hardware platforms without board-specific kernel code.
+DTS -> dtb (compiled)
+
+
+Top half and bottom half are two parts of interrupt handling in the Linux kernel.
+
+Top half does the urgent, minimal work when an interrupt occurs.
+Bottom half does the deferred, non-urgent work later.
+
+What does process context contain?
+
+1️⃣ CPU register state
+Program Counter (PC / IP)
+Stack Pointer (SP)
+General-purpose registers
+Flags / status registers
+
+2️⃣ Memory context
+Virtual address space
+Page tables
+Stack
+Heap
+Code (text segment)
+Data & BSS
+
+3️⃣ Kernel context
+Kernel stack
+System call state
+Open file table references
+Signal handlers
+Scheduling information
+
+4️⃣ Process control info (PCB / task_struct)
+Stored in kernel data structures:
+PID
+Process state (Running, Ready, Blocked)
+Priority
+Scheduling policy
+CPU affinity
+
+
+
+
+Key Differences
+
+Macro	                                    Inline Function
+
+Preprocessor feature	                    Compiler feature
+Text substitution	                        Function semantics
+No type checking	                        Type checked
+No scope rules	                            Follows C scope rules
+No return type	                            Has return type
+
+

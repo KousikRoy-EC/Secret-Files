@@ -2123,3 +2123,6 @@ No scope rules	                            Follows C scope rules
 No return type	                            Has return type
 
 
+
+
+memcpy and memmove difference is memcpy copies one block of memory from src to dest without overlaping memmove can copy overlapping memory blocks

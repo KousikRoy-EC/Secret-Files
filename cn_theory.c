@@ -182,21 +182,78 @@ The "Scanner" for networking. It captures packets from the wire and decodes them
 ------>     Network Interview Questions for 2 YOE     <------
 
 1. Explain the difference between a Hub, Switch, and Router.
+
+Ans : The difference between a Hub, Switch, and Router is as follows : 
+
+1. Hub (The "Dumb" Device)
+Layer: Physical Layer (Layer 1)
+How it works: A Hub is the simplest device. It connects multiple Ethernet devices together, but it has no intelligence. When it receives data on one port, it blindly broadcasts (repeats) that data to ALL other connected ports, regardless of the destination.
+Collision Domain: A Hub is a single collision domain. If two devices try to send data at the same time, the signals collide, and both must wait and retry.
+Security & Efficiency: Very poor. Since everyone receives everyone else's traffic, it creates security risks (sniffing) and network congestion.
+Addressing: It does not understand MAC or IP addresses. It only deals with electrical signals (bits).
+Example: Imagine a small office with 4 computers (A, B, C, D) connected to a Hub.
+
+If Computer A wants to send a private file to Computer B, it sends the data to the Hub.
+The Hub immediately copies that data and sends it to B, C, and D.
+Computers C and D receive the packet but ignore it because it's not meant for them — however, the bandwidth was still wasted, and a hacker on C could easily intercept the message.
+
+2. Switch (The "Intelligent" Device)
+Layer: Data Link Layer (Layer 2)
+How it works: A Switch is smarter than a hub. It keeps a MAC Address Table in its memory, which maps MAC addresses to specific physical ports. When a packet arrives, the switch looks at the Destination MAC Address and forwards the data ONLY to the port where that device is connected.
+Collision Domain: Each port on a switch is its own separate collision domain. This allows full-duplex communication (sending and receiving at the same time) without collisions.
+Broadcast Domain: A Switch is still keeping everyone on the same LAN, so it is a single broadcast domain. (If a device sends a broadcast frame like ARP, the switch will forward it to everyone).
+Example: In the same office, replace the Hub with a Switch.
+
+Computer A sends a file to Computer B.
+The Switch looks at its table: "Computer B's MAC address is on Port 2."
+The Switch sends the data only to Port 2.
+Computers C and D hear nothing. The network is faster and more secure.
+
+3. Router (The "Gateway")
+Layer: Network Layer (Layer 3)
+How it works: A Router is designed to connect different networks together (e.g., your Home LAN connects to the Internet WAN). It routes data based on IP Addresses. It uses a Routing Table to decide the best path for a packet to reach its destination.
+Broadcast Domain: A Router breaks broadcast domains. Broadcasts sent on your LAN do not cross the router to the internet.
+Crucial Function: It usually performs NAT (Network Address Translation), allowing multiple devices on your private LAN (192.168.x.x) to share a single Public IP address provided by your ISP.
+Example: You are at home on your Laptop (connected to Wi-Fi) and you want to visit google.com.
+
+Your Switch (often built into the router) handles the local traffic between your Laptop and the Router.
+The Router sees the destination IP is 142.250.x.x (Google), which is not on your local network.
+The Router sends the request out through the WAN port to your ISP, forwarding it across the internet to reach Google.
+Without the router, your computer would have no way to leave your local home network.
+
 2. What is a "Default Gateway" and why does an embedded device need it?
+
+Ans : The default gateway is the IP address of the router that the device uses to communicate with devices on other networks. It is the first hop that the device takes when sending a packet to a destination that is not on the same network as the device.
+
 3. How does TCP handle a packet that was sent but never acknowledged?
+
+Ans : If a TCP packet is sent but never acknowledged, the sender will retransmit the packet after a certain timeout period. This timeout period is calculated based on the round-trip time (RTT) of the network connection. If the packet is still not acknowledged after several retransmissions, the connection will be terminated.
+
 4. If your device can ping its local router but not google.com, what could be the issue? (Common answer: DNS or Gateway misconfiguration).
+
+Ans : The issue could be either DNS or Gateway misconfiguration. 
+
 5. Compare MQTT and HTTP for a battery-powered sensor device.
+
+Ans : 
+
+| Feature | MQTT | HTTP |
+|---------|------|------|
+| Model | Publish/Subscribe (Async) | Request/Response (Sync) |
+| Overhead | Low (2-byte header) | High (Text-based headers) |
+| Connection | Persistent | Usually per-request |
+| Power | Low (Optimized for sleep) | High (Handshake overhead) |
+
+MQTT is better for battery-powered devices because it minimizes the radio "on-time" by using smaller packets and avoiding the repeated overhead of establishing new TCP/TLS connections for every data point.
+
 6. What is the MTU (Maximum Transmission Unit)? (Standard is 1500 bytes for Ethernet; fragments occur if exceeded).
-7. Explain the "Silley Window Syndrome" in TCP.
+
+Ans : The MTU is the largest size of a network layer packet (in bytes) that can be communicated in a single transaction over a network interface. For standard Ethernet, the MTU is 1500 bytes. If a packet exceeds the MTU of a link, it must be fragmented into smaller packets, which increases overhead and processing at both the router and the destination device.
 
 
 
 
 
------->     COMPLETE COMPUTER NETWORKS FOR EMBEDDED ENGINEERS     <------
-
-This document provides a deep dive into every networking layer, protocol, and mechanism relevant to embedded systems. 
-Ideal for interview revision and practical reference for 2+ years of experience.
 
 ================================================================================================
 ------>     Module 1: Physical & Link Layers (The Hardware Boundary)     <------

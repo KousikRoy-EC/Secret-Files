@@ -925,8 +925,7 @@ int subtract(int x, int y) {
 
 ### 5. Custom `sizeof` using macro
 ```c
-#define sizeof_custom(type) \
-    ((char*)(&type + 1) - (char*)(&type))
+#define sizeof_custom(type) ((char*)(&type + 1) - (char*)(&type))
 
 int var = 10;
 printf("%d", sizeof_custom(var));  // 4
@@ -986,6 +985,7 @@ unsigned int deleteBit(unsigned int num, int pos) {
 
 ### 1. `atoi` (String to Integer)
 ```c
+
 int my_atoi(const char *str) {
     int result = 0;
     int sign = 1;
@@ -2126,3 +2126,32 @@ No return type	                            Has return type
 
 
 memcpy and memmove difference is memcpy copies one block of memory from src to dest without overlaping memmove can copy overlapping memory blocks
+
+
+Use memcpy when you are copying data between two entirely different variables or completely separate buffers. It is faster.
+
+memcpy(dest, src, size);
+
+Use memmove when you are shifting data within the same array or buffer, or anytime you are unsure if the pointers might be looking at the same memory space.
+
+memmove(dest, src, size);
+
+
+
+
+If you use memcpy:
+Because it copies front-to-back incredibly fast without thinking:
+
+Copies 'A' to index 1. String becomes A ACDEF
+Tries to copy index 1 to index 2. But index 1 is now 'A'! String becomes A A A DEF
+Tries to copy index 2 to index 3. It's 'A' again! String becomes A A A A EF Result: Corrupted data ("AAAAAF").
+
+
+
+If you use memmove:
+It sees the destination address is higher than the source address, so it copies backwards from the end:
+
+Copies 'D' to index 4. String becomes ABCDEF (unchanged so far)
+Copies 'C' to index 3. String becomes ABCCEF
+Copies 'B' to index 2. String becomes ABBCEF
+Copies 'A' to index 1. String becomes AABCEF Result: Safe, expected data ("AABCEF").

@@ -2168,3 +2168,27 @@ pack(1) → no padding
 pack(2) → align to 2-byte boundaries
 
 
+
+
+struct v1
+{
+    int  a : 2;
+    char b : 2;
+    int  c : 2;
+    char d : 2;
+} V1;
+
+struct v2
+{
+    int  a : 2;
+    char b : 2;
+    int  c : 2;
+    char d;
+} V2;
+
+SIZE OF V1 =4
+SIZE OF V2 =8 
+
+(BECAUSE regular data type is not a part of bit field Bit-fields occupy one 4-byte unit
+char d takes 1 byte
+Padding added to satisfy struct alignment (int alignment = 4) )

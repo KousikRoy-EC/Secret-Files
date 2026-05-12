@@ -2155,3 +2155,16 @@ Copies 'D' to index 4. String becomes ABCDEF (unchanged so far)
 Copies 'C' to index 3. String becomes ABCCEF
 Copies 'B' to index 2. String becomes ABBCEF
 Copies 'A' to index 1. String becomes AABCEF Result: Safe, expected data ("AABCEF").
+
+
+
+
+
+
+
+Pragma pack 1 and 2 difference : 
+
+pack(1) → no padding
+pack(2) → align to 2-byte boundaries
+
+

@@ -2192,3 +2192,27 @@ SIZE OF V2 =8
 (BECAUSE regular data type is not a part of bit field Bit-fields occupy one 4-byte unit
 char d takes 1 byte
 Padding added to satisfy struct alignment (int alignment = 4) )
+
+
+
+
+
+
+
+
+Convert lowercase → uppercase
+
+Clear bit 5 using AND with ~(1 << 5).
+
+char upper = c & ~(1 << 5);
+
+
+Convert uppercase → lowercase
+
+Set bit 5 using OR with (1 << 5).
+
+char lower = c | (1 << 5);
+
+
+
+

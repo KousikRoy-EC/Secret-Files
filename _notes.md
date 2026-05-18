@@ -376,6 +376,7 @@ printf("%d\n", *p++);    // 20, then p moves to arr[2]
 **Important:**
 - `*++p`: Increment pointer first, then dereference
 - `*p++`: Dereference first, then increment pointer
+- `++*p`: increments the value stored at the memory location currently pointed to by
 
 ### Pointer and const
 
@@ -823,7 +824,7 @@ int square(int x) {
 
 | Feature       | Function      | Macro         |
 | ------------- | ------------- | ------------- |
-| Type checking | ✅ Yes         | ❌ No          |
+| Type checking | ✅ Yes        | ❌ No         |
 | Overhead      | Function call | None (inline) |
 | Side effects  | Safe          | Dangerous     |
 | Debugging     | Easy          | Difficult     |
@@ -890,7 +891,7 @@ printf("%c", 5["abxdef"]);  // Output: 'f'
 ### 2. Can we compile without `main()`?
 **Yes**, using custom entry point:
 ```c
-#define main my_entry
+#define my_entry main
 int my_entry() {
     printf("Hello\n");
     return 0;
@@ -1025,7 +1026,7 @@ void my_itoa(int num, char *str) {
     }
     
     if (num < 0)
-        num = -num;
+        sign = -num;
     
     // Extract digits
     while (num != 0) {

@@ -584,3 +584,5 @@ These topics separate a senior embedded engineer from a junior one in networking
 -------------------------------
 - L2 Switch: Forwards based on MAC address (Hardware speed, same subnet).
 - L3 Switch/Router: Forwards based on IP address (Routes between different subnets).
+
+

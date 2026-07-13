@@ -920,7 +920,7 @@ printf("%c", 5["abxdef"]);  // Output: 'f'
 ### 2. Can we compile without `main()`?
 **Yes**, using custom entry point:
 ```c
-#define main my_entry
+#define my_entry main
 int my_entry() {
     printf("Hello\n");
     return 0;

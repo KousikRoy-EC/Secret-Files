@@ -72,6 +72,13 @@
 #### Examples:
 
 
+why cant we declare register variable global ?
+
+REGISTER is only used to suggest the compiler to store the variable in register for fast access. 
+1. global variables are stored in the data section which is not a CPU register
+2. CPU registers are volatile in nature and are not meant for storing global variables which may be accessed by other threads or processes
+
+
 
 ```c
 // auto (default for local variables)
@@ -387,7 +394,7 @@ printf("%d\n", *p++);    // 20, then p moves to arr[2]
 - ++*p: Increment value at address
 - (*p)++: Increment value at address
 
-int *ptr1[10] // array of 10 pointers
+int *ptr[10] // array of 10 pointers
 int(*ptr)[10] // pointer to array of 10 integers
 int(*ptr)(int,int) // pointer to function that takes two integers and returns an integer
 int(*ptr[10])(int,int) // array of 10 pointers to functions that take two integers and return an integer
@@ -397,8 +404,8 @@ int(*ptr[10])(int,int) // array of 10 pointers to functions that take two intege
 
 | Declaration            | Pointer Modifiable? | Data Modifiable? |
 |------------------------|---------------------|------------------|
-| `const int *ptr`       | ✅ Yes               | ❌ No             |
 | `int *const ptr`       | ❌ No                | ✅ Yes            |
+| `const int *ptr`       | ✅ Yes               | ❌ No             |
 | `const int *const ptr` | ❌ No                | ❌ No             |
 
 ```c
@@ -515,17 +522,6 @@ free(arr1);
 free(arr2);
 ```
 
-### malloc vs new (C++)
-
-| Feature        | malloc                         | new                      |
-|----------------|--------------------------------|--------------------------|
-| Language       | C & C++                        | C++ only                 |
-| Type           | Function                       | Operator                 |
-| Returns        | `void*` (requires cast in C++) | Typed pointer            |
-| Initialization | No                             | Yes (calls constructors) |
-| Deallocation   | `free()`                       | `delete` / `delete[]`    |
-| Error          | Returns NULL                   | Throws `std::bad_alloc`  |
-
 ```c
 // C: malloc
 int *ptr = (int*)malloc(sizeof(int));
@@ -609,130 +605,6 @@ int *danglingPointer() {
 ```
 
 ---
-
-## Threading & Concurrency
-
-### Creating Threads (C++)
-
-```cpp
-#include <thread>
-#include <iostream>
-
-void printNumbers(int n) {
-    for (int i = 1; i <= n; i++) {
-        std::cout << i << " ";
-    }
-}
-
-int main() {
-    std::thread t1(printNumbers, 10);
-    t1.join();  // Wait for thread to complete
-    return 0;
-}
-```
-
-### 5 Ways to Create Threads
-
-#### 1. Function Pointer
-functor are nothing but function objects which overload the operator (). so when we call the object with () it calls the operator () function.
-
-#### 2. Lambda Function
-
-#### 3. Functor
-
-#### 4. Member Function
-
-#### 5. Static Member Function
-
-
-### Thread Synchronization
-
-#### Mutex (Mutual Exclusion)
-```cpp
-#include <mutex>
-
-std::mutex mtx;
-int counter = 0;
-
-void increment() {
-    for (int i = 0; i < 100000; i++) {
-        mtx.lock();
-        counter++;
-        mtx.unlock();
-    }
-}
-```
-
-#### lock_guard (RAII - Safer)
-```cpp
-void increment() {
-    for (int i = 0; i < 100000; i++) {
-        std::lock_guard<std::mutex> lock(mtx);
-        counter++;
-    }  // Automatically unlocks
-}
-```
-
-#### Better: Local Accumulation
-```cpp
-void increment() {
-    int local = 0;
-    for (int i = 0; i < 100000; i++) {
-        local++;
-    }
-    std::lock_guard<std::mutex> lock(mtx);
-    counter += local;  // Lock once, not 100000 times!
-}
-```
-
-### Deadlock
-
-**Problem:**
-```cpp
-std::mutex mtx1, mtx2;
-
-void thread1() {
-    mtx1.lock();
-    // ... work ...
-    mtx2.lock();  // Waits for thread2
-    // Deadlock!
-}
-
-void thread2() {
-    mtx2.lock();
-    // ... work ...
-    mtx1.lock();  // Waits for thread1
-    // Deadlock!
-}
-```
-
-**Solution 1: Lock Multiple Together**
-```cpp
-void thread1() {
-    std::lock(mtx1, mtx2);
-    std::lock_guard<std::mutex> lock1(mtx1, std::adopt_lock);
-    std::lock_guard<std::mutex> lock2(mtx2, std::adopt_lock);
-    // Safe!
-}
-```
-
-**Solution 2: try_lock with Retry**
-```cpp
-void thread1() {
-    while (true) {
-        if (mtx1.try_lock()) {
-            if (mtx2.try_lock()) {
-                // Got both locks
-                mtx2.unlock();
-                mtx1.unlock();
-                break;
-            }
-            mtx1.unlock();
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-}
-```
 
 ### Reentrant Functions
 
@@ -1131,7 +1003,7 @@ int my_strcmp(const char *s1, const char *s2) {
         s1++;
         s2++;
     }
-    return *(unsigned char*)s1 - *(unsigned char*)s2;
+    return *(unsigned char*)s1 - *(unsigned char*)s2; // return 0 if strings are equal, negative if s1 < s2, positive if s1 > s2
 }
 ```
 
@@ -1981,7 +1853,7 @@ int main() {
 */
 
 
-without bitwise operator 
+without bitwise operator
 
 #include <iostream>
 using namespace std;
@@ -2136,49 +2008,6 @@ file2.c
 Changes to a in File 1 will not be reflected in File 2. Each file gets its own private copy.
 
 
-A device tree is a hardware description data structure passed to the Linux kernel at boot time, allowing the kernel to support multiple hardware platforms without board-specific kernel code.
-DTS -> dtb (compiled)
-
-
-Top half and bottom half are two parts of interrupt handling in the Linux kernel.
-
-Top half does the urgent, minimal work when an interrupt occurs.
-Bottom half does the deferred, non-urgent work later.
-
-What does process context contain?
-
-1️⃣ CPU register state
-Program Counter (PC / IP)
-Stack Pointer (SP)
-General-purpose registers
-Flags / status registers
-
-2️⃣ Memory context
-Virtual address space
-Page tables
-Stack
-Heap
-Code (text segment)
-Data & BSS
-
-3️⃣ Kernel context
-Kernel stack
-System call state
-Open file table references
-Signal handlers
-Scheduling information
-
-4️⃣ Process control info (PCB / task_struct)
-Stored in kernel data structures:
-PID
-Process state (Running, Ready, Blocked)
-Priority
-Scheduling policy
-CPU affinity
-
-
-
-
 Key Differences
 
 Macro	                                    Inline Function
@@ -2264,6 +2093,9 @@ struct v2
 
 SIZE OF V1 =4
 SIZE OF V2 =8 
+
+
+how ?? 
 
 (BECAUSE regular data type is not a part of bit field Bit-fields occupy one 4-byte unit
 char d takes 1 byte
@@ -4189,35 +4021,3 @@ static inline int min_val(int a, int b) {
     return (a < b) ? a : b;
 }
 ```
-
-### Common Embedded C Patterns Summary
-
-```c
-// 1. Register access via volatile pointer
-#define REG32(addr) (*(volatile uint32_t *)(addr))
-REG32(0x40020014) = 0xFF;
-
-// 2. STATIC_ASSERT (compile-time check)
-#define STATIC_ASSERT(cond, msg) \
-    typedef char static_assert_##msg[(cond) ? 1 : -1]
-
-STATIC_ASSERT(sizeof(int) == 4, int_must_be_4_bytes);
-
-// 3. Container_of (Linux kernel style)
-#define container_of(ptr, type, member) \
-    ((type *)((char *)(ptr) - offsetof(type, member)))
-
-// 4. MIN/MAX with type safety (GCC)
-#define MIN(a, b) ({        \
-    typeof(a) _a = (a);     \
-    typeof(b) _b = (b);     \
-    _a < _b ? _a : _b;     \
-})
-
-// 5. Array length
-#define ARRAY_LEN(arr) (sizeof(arr) / sizeof((arr)[0]))
-
-// 6. Unused variable warning suppression
-#define UNUSED(x) ((void)(x))
-```
-

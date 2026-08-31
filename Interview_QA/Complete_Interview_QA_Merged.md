@@ -565,17 +565,17 @@ Value:    0xAA   0xBB   0xCC   0xDD   0xEE
 
 **Little-Endian (x86, ARM):**
 - Byte at lowest address = least significant byte
-- Integer = `0xDDCCBBAA`
+- Integer = `0xEEDDCCBBAA`
 
 **Big-Endian (PowerPC, SPARC):**
 - Byte at lowest address = most significant byte
-- Integer = `0xAABBCCDD`
+- Integer = `0xAABBCCDDEE`
 
 ### Output
-| System        | Output     |
-|---------------|------------|
-| Little-Endian | `ddccbbaa` |
-| Big-Endian    | `aabbccdd` |
+| System        | Output       |
+|---------------|--------------|
+| Little-Endian | `eeddccbbaa` |
+| Big-Endian    | `aabbccddee` |
 
 ---
 
@@ -1122,12 +1122,6 @@ MAX_SIZE = 200; // ERROR: assignment of read-only variable
 
 ### The 4 Pointer-`const` Combinations
 
-```
-                    ┌──────────────────────────────────────────────┐
-                    │  Read the declaration RIGHT to LEFT          │
-                    └──────────────────────────────────────────────┘
-```
-
 | Declaration          | Read As                            | Pointer Modifiable? | Data Modifiable? |
 |----------------------|------------------------------------|---------------------|------------------|
 | `int *p`             | Pointer to int                     | ✅ Yes               | ✅ Yes            |
@@ -1422,7 +1416,7 @@ A 32-bit float is stored as:
 - **Mantissa (23 bits):** Stores the fractional part of the normalized number. An implicit leading `1.` is assumed (normalized form: `1.mantissa × 2^exponent`).
 
 ### Example: Represent `6.75` in IEEE 754
-
+Fracton entity is resolved by multiplying by 2 until fractin become zero
 1. **Convert to binary:** `6.75` = `110.11` in binary.
 2. **Normalize:** `1.1011 × 2^2` (moved decimal point 2 places left).
 3. **Sign bit:** `0` (positive).
@@ -1555,10 +1549,6 @@ int my_atoi(const char *str) {
     
     // Process digits
     while (str[i] >= '0' && str[i] <= '9') {
-        // Check for overflow before multiplying
-        if (result > (2147483647 - (str[i] - '0')) / 10) {
-            return (sign == 1) ? 2147483647 : -2147483648; // INT_MAX / INT_MIN
-        }
         result = result * 10 + (str[i] - '0');
         i++;
     }
@@ -1614,43 +1604,7 @@ int main() {
     return 0;
 }
 ```
-
----
-
-## Q2.27: Addressing Modes
-
-Addressing modes specify how the CPU determines the effective memory address of an operand in an instruction.
-
-| Addressing Mode       | Description                                     | Example (ARM-like)                               |
-|-----------------------|-------------------------------------------------|--------------------------------------------------|
-| **Immediate**         | Operand value is part of the instruction itself | `MOV R0, #5` (R0 = 5)                            |
-| **Register**          | Operand is in a CPU register                    | `ADD R0, R1, R2` (R0 = R1 + R2)                  |
-| **Direct**            | Instruction contains the full memory address    | `LDR R0, [0x1000]` (R0 = Mem[0x1000])            |
-| **Register Indirect** | A register holds the memory address             | `LDR R0, [R1]` (R0 = Mem[R1])                    |
-| **Indexed**           | Base register + offset                          | `LDR R0, [R1, #4]` (R0 = Mem[R1+4])              |
-| **Pre/Post-Indexed**  | Auto-modify register before/after access        | `LDR R0, [R1, #4]!` (R1 += 4, then R0 = Mem[R1]) |
-
----
-
-## Q2.28: Difference Between 8-bit, 16-bit, and 32-bit Microcontrollers
-
-| Feature                    | 8-bit MCU               | 16-bit MCU              | 32-bit MCU                  |
-|----------------------------|-------------------------|-------------------------|-----------------------------|
-| **Data Bus Width**         | 8 bits                  | 16 bits                 | 32 bits                     |
-| **Max Addressable Memory** | 256 bytes to 64 KB      | 64 KB to 1 MB           | Up to 4 GB                  |
-| **Processing Power**       | Low (simple arithmetic) | Medium                  | High (complex math, DSP)    |
-| **Clock Speed**            | 1–20 MHz                | 8–25 MHz                | 48 MHz – 1+ GHz             |
-| **Power Consumption**      | Very low                | Low                     | Moderate to high            |
-| **Cost**                   | Very cheap ($0.10–$1)   | Moderate ($1–$5)        | Higher ($2–$20+)            |
-| **Example Families**       | AVR (ATmega328), PIC16  | MSP430, PIC24           | ARM Cortex-M (STM32), ESP32 |
-| **Typical Applications**   | Simple sensors, remotes | Motor control, metering | IoT, RTOS, GUI, networking  |
-| **Instruction Set**        | CISC or simple RISC     | RISC                    | ARM (RISC, Thumb-2)         |
-
-### Key Insight
-The "bit-ness" refers to the native **data bus width** and the **ALU (Arithmetic Logic Unit) register size**. An 8-bit MCU processes 8 bits of data in a single instruction cycle. To add two 32-bit numbers on an 8-bit MCU, the CPU must perform 4 separate 8-bit additions with carry propagation, making it significantly slower for wide-data operations.
-
----
----
+--
 
 # 3. Memory Layout, Management & Pointers
 
@@ -1887,6 +1841,11 @@ struct Padded {
     // 3 bytes padding
 }; // Total size = 12 bytes
 ```
+
+struct pointer{
+    char a;
+    int *ptr;
+}
 
 ### Visual Representation of Padded Memory (32-bit boundaries):
 ```
@@ -4667,86 +4626,6 @@ int main() {
 
 `SOCK_RAW` requires root/`CAP_NET_RAW` privilege.
 
----
-
-## Q9.10: UDP Socket Client-Server Code
-
-### UDP Server
-```c
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-
-#define PORT 8080
-#define BUF_SIZE 1024
-
-int main() {
-    int sockfd;
-    struct sockaddr_in server_addr, client_addr;
-    char buffer[BUF_SIZE];
-    socklen_t addr_len = sizeof(client_addr);
-
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-
-    memset(&server_addr, 0, sizeof(server_addr));
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = INADDR_ANY;
-    server_addr.sin_port = htons(PORT);
-
-    bind(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
-
-    int n = recvfrom(sockfd, buffer, BUF_SIZE, 0,
-                     (struct sockaddr*)&client_addr, &addr_len);
-    buffer[n] = '\0';
-    printf("Received: %s\n", buffer);
-
-    char *reply = "ACK from UDP server";
-    sendto(sockfd, reply, strlen(reply), 0,
-           (struct sockaddr*)&client_addr, addr_len);
-
-    close(sockfd);
-    return 0;
-}
-```
-
-### UDP Client
-```c
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-
-#define PORT 8080
-
-int main() {
-    int sockfd;
-    struct sockaddr_in server_addr;
-    char buffer[1024];
-    socklen_t addr_len = sizeof(server_addr);
-
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-
-    memset(&server_addr, 0, sizeof(server_addr));
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(PORT);
-    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-
-    char *msg = "Hello from UDP client";
-    sendto(sockfd, msg, strlen(msg), 0,
-           (struct sockaddr*)&server_addr, sizeof(server_addr));
-
-    int n = recvfrom(sockfd, buffer, 1024, 0,
-                     (struct sockaddr*)&server_addr, &addr_len);
-    buffer[n] = '\0';
-    printf("Server: %s\n", buffer);
-
-    close(sockfd);
-    return 0;
-}
-```
-
----
 
 ## Q9.11: Socket Functions Summary (TCP vs UDP)
 
@@ -4820,54 +4699,3 @@ Grandchild Destructor
 Derived Destructor
 Base Destructor
 ```
-
----
-
-## Q10.3: Why 1 Byte = 8 bits?
-
-Historically, computers used character sizes ranging from 4 to 12 bits. In 1964, IBM standardized on an 8-bit byte for System/360, accommodating the EBCDIC character set. 8 bits is also a power of 2 (2³), making binary memory addressing hardware architectures simpler.
-
----
----
-
-# 11. Miscellaneous & Tools
-
----
-
-## Q11.1: Git/Perforce Version Control Basics
-
-### Git (Distributed VCS)
-```bash
-git init                  # Initialize repository
-git add .                 # Stage all files
-git commit -m "message"   # Commit changes
-git branch feature        # Create branch
-git checkout feature      # Switch to branch
-git merge feature         # Merge branch into current
-git push origin main      # Push to remote
-git pull                  # Fetch + merge from remote
-git log --oneline -n 10   # View recent history
-git stash                 # Temporarily save uncommitted changes
-```
-
-### Perforce (Centralized VCS)
-```bash
-p4 sync                   # Get latest from depot
-p4 edit file.c            # Check out file for editing
-p4 add newfile.c          # Mark new file for addition
-p4 submit -d "message"    # Submit changelist
-p4 revert file.c          # Discard local changes
-p4 diff file.c            # Show diff against depot version
-```
-
-### Key Differences
-| Feature                | Git                              | Perforce                                |
-|------------------------|----------------------------------|-----------------------------------------|
-| **Architecture**       | Distributed (full local history) | Centralized (server-centric)            |
-| **Offline Work**       | ✅ Full offline support           | ❌ Requires server connection            |
-| **Large Binary Files** | Poor (use Git LFS)               | ✅ Excellent (designed for large assets) |
-| **Branching**          | Lightweight, fast                | Heavier, stream-based                   |
-
----
-
-*End of Complete Merged Interview Q&A Document*

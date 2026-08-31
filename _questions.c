@@ -73,7 +73,6 @@ int main(){
     return 0;
 }
 
-
 */
 
 // 3. Pallindrome no
@@ -121,9 +120,6 @@ int main()
 }
 
 */
-
-
-
 
 
 // lcm and gcd of numbers
@@ -1718,7 +1714,20 @@ int addIntegers(int a, int b) {
     return a;
 }
 
-// Problem: Find the two non-repeating elements in an array where every other element
+// Problem multiply two numbers using bit manipulation
+
+int multiply(int x, int y) {
+    int result = 0;
+    while (y != 0) {
+        if (y & 1)          // if lowest bit of y is 1
+            result += x;    // add x into result
+        x <<= 1;            // x = x * 2 (shift left)
+        y >>= 1;            // y = y / 2 (shift right)
+    }
+    return result;
+}
+
+// Problem: Find the two non-repeating elements in an array where every other element repeat twice
 
 void findNonRepeatingElements(int arr[], int size) {
     int xorAll = 0;
@@ -1740,91 +1749,6 @@ void findNonRepeatingElements(int arr[], int size) {
 
     printf("The two non-repeating elements are: %d and %d\n", num1, num2);  
 }
-
-
-
-
-/* 1 ) Largest Element in an array
-
-#include <stdio.h>
-
-int findLargest(int arr[],int size){
-    int MAX_TILL_NOW=-1;
-
-    for(int idx=0;idx<size;idx++){
-        if(arr[idx]>MAX_TILL_NOW){
-            MAX_TILL_NOW=arr[idx];
-        }
-    }
-    return MAX_TILL_NOW;
-}
-
-int main(){
-    int arr[]={23,76,89,43,56,90};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    int largestElement=findLargest(arr,size);
-    printf("The largest element is : %d",largestElement);
-    return 0;
-}
-
-*/
-
-
-/* 2 ) Second Largest Element in an array
-
-#include <stdio.h>
-
-int findSecLargestElement(int arr[],int size){
-    int second_max=-1;
-    int first_max=-1;
-
-    for(int idx=0;idx<size;idx++){
-        if(first_max<arr[idx]){
-            second_max=first_max;
-            first_max=arr[idx];
-        }
-        else if((second_max<arr[idx]) && (first_max != arr[idx])) {
-                second_max=arr[idx];
-        }
-    }
-
-    return second_max;
-}
-int main(){
-    int arr[]={23,76,89,43,78,90};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    int findSecLargest=findSecLargestElement(arr,size);
-    printf("The second largest element is : %d",findSecLargest);
-    return 0;
-}
-
- */
-
-
-/* 3 ) Check if array is sorted 
-
-#include <stdio.h>
-
-int isArraySorted(int *ptr,int size)
-{
-    for(int idx=0;idx<(size-1);idx++){
-        if(*(ptr+idx) > *(ptr + idx + 1)){
-            return 0;
-        }
-    }
-    return 1;
-}
-
-int main(){
-    int arr[]={23,76,89,43,78,90};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    int sorted=isArraySorted(arr,size);
-    (sorted == 1) ? printf("Sorted Array") :  printf("Not A Sorted Array");
-    return 0;
-}
-
-*/
-
 
 /* 4 ) Reverse an array 
 
@@ -1857,35 +1781,6 @@ int main(){
 
 
 /*
-  5 ) Remove Duplicate Element from sorted array 
-
-
-#include <stdio.h>
-
-int removeDuplicate(int *arr,int size){
-    int sorted_idx=0;
-
-    for(int idx=1;idx<size;idx++){
-        if(arr[idx]!=arr[sorted_idx]){
-            arr[++sorted_idx]=arr[idx];
-        }
-    }
-    return sorted_idx;
-}
-
-int main(){
-    int arr[]={1,2,3,3,4,5,6,6,8,8};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    int newSize=removeDuplicate(arr,size);
-
-    for(int idx=0;idx<newSize;idx++){
-        printf("%d ",arr[idx]);
-    }
-    return 0;
-}
-*/
-
-/*
   5 ) Remove Duplicate Element from unsorted array 
 
 
@@ -1894,7 +1789,7 @@ int main(){
 int removeDuplicate(int *arr,int size){
     int hashTable[1024];
     int newSize=0;
-    
+
     for(int idx=0;idx<size;idx++){
         hashTable[arr[idx]]++;
     }
@@ -1995,258 +1890,6 @@ int main(){
 
 */
 
-/* 8 ) Leaders in an Array 
-
-
-#include <stdio.h>
-
-void findLeaders(int *arr,int size){
-    int max_till_now=-1;
-
-    for(int idx=size-1;idx>=0;idx--){
-        if(arr[idx]>max_till_now){
-            printf("%d ",arr[idx]);
-            max_till_now=arr[idx];
-        }
-    }
-}
-
-int main(){
-    int arr[]={16,17,4,3,5,2};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    findLeaders(arr,size);
-    return 0;
-}
-
-*/
-
-
-/* 10) Frequencies in a Sorted Array
-
-#include <stdio.h>
-
-void findFrequencies(int *arr,int size){
-    int count=1;
-
-    for(int idx=1;idx<size;idx++){
-        if(arr[idx]==arr[idx-1]){
-            count++;
-        }
-        else{
-            printf("%d -> %d\n",arr[idx-1],count);
-            count=1;
-        }
-    }
-    printf("%d -> %d\n",arr[size-1],count);
-}
-
-
-int main(){
-    int arr[]={10,10,20,20,20,30,30,40};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    findFrequencies(arr,size);
-    return 0;
-}
-*/
-
-
-/* 11 ) Stock Buy and Sell Problem
-
-
-#include <stdio.h>
-
-void stockBuySell(int *arr,int size){
-    for(int idx=1;idx<size;idx++){
-        if(arr[idx]>arr[idx-1]){
-            printf("Buy on day %d and Sell on day %d\n",idx-1,idx);
-        }
-    }
-}
-
-int main(){
-    int arr[]={100,180,260,310,40,535,695};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    stockBuySell(arr,size);
-    return 0;
-}
-
-*/
-
-/* 13 ) Trapping Rain Water
-
-#include <stdio.h>
-
-int trapRainWater(int *arr,int size){
-    int left_max[size];
-    int right_max[size];
-    int total_water=0;
-
-    left_max[0]=arr[0];
-    for(int idx=1;idx<size;idx++){
-        left_max[idx]=(arr[idx]>left_max[idx-1]) ? arr[idx] : left_max[idx-1];
-    }
-
-    right_max[size-1]=arr[size-1];
-    for(int idx=size-2;idx>=0;idx--){
-        right_max[idx]=(arr[idx]>right_max[idx+1]) ? arr[idx] : right_max[idx+1];
-    }
-
-    for(int idx=0;idx<size;idx++){
-        total_water+=( (left_max[idx]<right_max[idx]) ? left_max[idx] : right_max[idx] ) - arr[idx];
-    }
-
-    return total_water;
-}
-
-int main(){
-    int arr[]={0,1,0,2,1,0,1,3,2,1,2,1};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    int totalWater=trapRainWater(arr,size);
-    printf("Total water trapped is : %d",totalWater);
-    return 0;
-}
-
-*/
-
-
-
-/* 14 ) Maximum consecutive 1s 
-
-#include <stdio.h>
-
-int maxConsecutiveOnes(int *arr,int size){
-    int count=0;
-    int max_count=0;
-
-    for(int idx=0;idx<size;idx++){
-        if(arr[idx]==1){
-            count++;
-        }
-        else{
-            max_count=(count>max_count) ? count : max_count;
-            count=0;
-        }
-    }
-    max_count=(count>max_count) ? count : max_count;
-    return max_count;
-}
-
-
-int main(){
-    int arr[]={1,1,0,1,1,1};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    int maxCount=maxConsecutiveOnes(arr,size);
-    printf("Maximum consecutive 1s are : %d",maxCount);
-    return 0;
-}
-
-*/
-
-
-/* 15 ) Maximum subarray sum 
-
-#include <stdio.h>
-
-int maxSubarraySum(int *arr,int size){
-    int max_sum=0;
-    int current_sum=0;
-
-    for(int idx=0;idx<size;idx++){
-        current_sum+=arr[idx];
-        if(current_sum>max_sum){
-            max_sum=current_sum;
-        }
-        if(current_sum<0){
-            current_sum=0;
-        }
-    }
-    return max_sum;
-}
-
-int main(){
-    int arr[]={5,4,-3,2,1};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    int maxSum=maxSubarraySum(arr,size);
-    printf("Maximum subarray sum is : %d",maxSum);
-    return 0;
-}
-
-*/
-
-/* 16 ) Longest Even Odd Subarray
-
-#include <stdio.h>
-
-int longestEvenOddSubarray(int *arr,int size){
-    int max_length=1;
-    int current_length=1;
-
-    for(int idx=1;idx<size;idx++){
-        if( (arr[idx]%2==0 && arr[idx-1]%2!=0) || (arr[idx]%2!=0 && arr[idx-1]%2==0) ){
-            current_length++;
-        }
-        else{
-            max_length=(current_length>max_length) ? current_length : max_length;
-            current_length=1;
-        }
-    }
-    max_length=(current_length>max_length) ? current_length : max_length;
-    return max_length;
-}
-
-int main(){
-    int arr[]={5,10,20,6,3,8};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    int longestLength=longestEvenOddSubarray(arr,size);
-    printf("Longest even odd subarray length is : %d",longestLength);
-    return 0;
-}
-
-*/
-
-
-/* 17 ) Maximum Circular Sum Subarray 
-
-#include <stdio.h>
-
-int maxSubarraySum(int *arr,int size){
-    int max_sum=0;
-    int current_sum=0;
-
-    for(int idx=0;idx<size;idx++){
-        current_sum+=arr[idx];
-        if(current_sum>max_sum){
-            max_sum=current_sum;
-        }
-        if(current_sum<0){
-            current_sum=0;
-        }
-    }
-    return max_sum;
-}
-
-int maxCircularSubarraySum(int *arr,int size){
-    int max_kadane=maxSubarraySum(arr,size);
-    int total_sum=0;
-
-    for(int idx=0;idx<size;idx++){
-        total_sum+=arr[idx];
-        arr[idx]=-arr[idx];
-    }
-
-    int max_wrap=total_sum + maxSubarraySum(arr,size);
-    return (max_wrap>max_kadane) ? max_wrap : max_kadane;
-}
-
-int main(){
-    int arr[]={8,-8,9,-9,10,-11,12};
-    int size=sizeof(arr)/sizeof(arr[0]);
-    int maxCircularSum=maxCircularSubarraySum(arr,size);
-    printf("Maximum circular subarray sum is : %d",maxCircularSum);
-    return 0;
-}
-
-*/
 
 /* 18 ) Majority Element 
 Algorithm (Boyer Moore Voting Algorithm) 
@@ -2334,6 +1977,9 @@ int main(){
 }
 
 */
+
+
+
 
 /* 1 ) Reverse a Linked List 
 
@@ -2695,6 +2341,94 @@ int main(){
 */
 
 
+
+
+typedef struct Node{
+    int data;
+    struct Node* next;
+}Node;
+
+Node* createNode(int val){
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = val;
+    newNode->next = NULL;
+    return newNode;
+}
+
+Node* helperIntersection(Node* ListNode1, Node* ListNode2, int l1, int l2){
+    int count=l1-l2;
+    while(count--) ListNode1 = ListNode1->next;
+    
+    while(ListNode1 && ListNode2) {
+        if(ListNode1 == ListNode2) return ListNode1;
+        
+        ListNode1 = ListNode1->next;
+        ListNode2 = ListNode2->next;
+    }
+    return NULL;
+}
+
+int findLength(Node* ListNode){
+    int count = 0;
+    while(ListNode){
+        count++;
+        ListNode = ListNode->next;
+    }
+    return count;
+}
+    
+
+Node* findIntersection(Node* ListNode1, Node* ListNode2){
+    if(ListNode1 == NULL || ListNode2 == NULL) return NULL;
+    
+    int Length1 = findLength(ListNode1);
+    int Length2 = findLength(ListNode2);
+    
+    Node* resultNode;
+    
+    if(Length1 < Length2){
+        resultNode = helperIntersection(ListNode2,ListNode1,Length2,Length1);
+    }
+    else{
+        resultNode = helperIntersection(ListNode1,ListNode2,Length1, Length2);
+    }
+    return resultNode;
+}
+
+int main()
+{
+    Node *common1 = createNode(30);
+    Node *common2 = createNode(40);
+    Node *common3 = createNode(50);
+
+    common1->next = common2;
+    common2->next = common3;
+
+    Node *head1 = createNode(10);
+    Node *node20 = createNode(20);
+
+    head1->next = node20;
+    node20->next = common1;
+
+    Node *head2 = createNode(15);
+    Node *node25 = createNode(25);
+
+    head2->next = node25;
+    node25->next = common1;
+   
+    Node *intersection = findIntersection(head1, head2);
+
+    if (intersection != NULL) {
+        printf("Intersection node = %d\n", intersection->data);
+    }
+    else {
+        printf("No intersection\n");
+    }
+
+    return 0;
+}
+
+
 /* 7 ) Delete a Node in a Linked List 
 
 #include <stdio.h>
@@ -2844,7 +2578,81 @@ int main() {
     return 0;
 }
 
+
 /* 10 ) Rotate a Linked List
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node{
+    int data;
+    struct Node* next;
+}Node;
+
+Node* createNode(int val){
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = val;
+    newNode->next = NULL;
+    return newNode;
+}
+
+int findLength(Node* head){
+    int count = 0;
+    Node* temp = head;
+    
+    while(temp != NULL){
+        count++;
+        temp=temp->next;
+    }
+    return count;
+}       
+
+Node* rotateLinkedList(Node** ListNode,int pos){
+    if(*ListNode == NULL) return NULL;
+    int length = findLength(*ListNode);
+    pos = pos%length;
+    if(pos == 0) return *ListNode;
+    
+    Node* list = *ListNode;
+    int count = 1;
+    
+    while(count++ < pos) list = list->next;
+    
+    Node *tempTail = list;
+    
+    while(list->next != NULL) list = list->next;
+    
+    list->next = *ListNode;
+    
+    list = tempTail->next;
+    tempTail->next = NULL;
+    return list;
+}
+
+void printList(Node* ListNode){
+    while(ListNode != NULL){
+        printf("%d->",ListNode->data);
+        ListNode = ListNode->next;
+    }
+}
+
+int main()
+{
+    Node *common1 = createNode(30);
+    Node *common2 = createNode(40);
+    Node *common3 = createNode(50);
+    common1->next = common2;
+    common2->next = common3;
+    Node *head1 = createNode(10);
+    Node *node20 = createNode(20);
+    head1->next = node20;
+    node20->next = common1;
+    int position = 3;
+
+    Node* result = rotateLinkedList(&head1, position);
+    printList(result);
+    return 0;
+}
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -2865,7 +2673,7 @@ void rotateLinkedList(struct Node *head,int k){
     while(count<k && current!=NULL){
         current=current->next;
         count++;
-    }
+    }                                         
 
     if(current==NULL){
         return;
@@ -2963,6 +2771,150 @@ int main(){
 }
 
  */
+
+
+
+Reverse a string in-place without a second buffer.
+
+/*
+#include <stdio.h>
+#include <string.h>
+
+void reverseString(char* str) {
+    int n = strlen(str);
+    char* start = str;
+    char* end = str + n - 1;
+
+    while (start < end) {
+        // Swap characters
+        char temp = *start;
+        *start = *end;
+        *end = temp;
+
+        start++;
+        end--;
+    }
+}
+
+int main() {
+    char str[] = "hello";
+    reverseString(str);
+    printf("Reversed string: %s\n", str); // Output: olleh
+    return 0;
+}
+*/
+
+// Check if a string is a palindrome using two pointers.
+
+/*
+#include <stdio.h>
+#include <string.h>
+
+int isPalindrome(char* str) {
+    int left = 0;
+    int right = strlen(str) - 1;
+
+    while (left < right) {
+        if (str[left] != str[right]) {
+            return 0; // Not a palindrome
+        }
+        left++;
+        right--;
+    }
+    return 1; // Is a palindrome
+}
+
+int main() {
+    char str1[] = "madam";
+    char str2[] = "hello";
+
+    printf("%s is palindrome: %d\n", str1, isPalindrome(str1)); // Output: 1
+    printf("%s is palindrome: %d\n", str2, isPalindrome(str2)); // Output: 0
+
+    return 0;
+}
+*/
+
+Remove duplicate characters from a string in-place.
+
+/*
+#include <stdio.h>
+#include <string.h>
+
+void removeDuplicates(char* str) {
+    int n = strlen(str);
+    if (n == 0) return;
+
+    // Sort the string (duplicates will be adjacent)
+    // For ASCII, you can use qsort or a simple bubble sort
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < (n - i - 1); j++) {
+            if (str[i] > str[j]) {
+                char temp = str[i];
+                str[i] = str[j];
+                str[j] = temp;
+            }
+        }
+    }
+
+    // Compact the array
+    int j = 0;
+    for (int i = 0; i < n; i++) {
+        if (i == 0 || str[i] != str[i - 1]) {
+            str[j++] = str[i];
+        }
+    }
+    str[j] = '\0'; // Null-terminate
+}
+
+int main() {
+    char str[] = "programming";
+    removeDuplicates(str);
+    printf("String after removing duplicates: %s\n", str); // Output: agimmnoprr
+
+    return 0;
+}
+*/
+
+Find the first non-repeating character in a string.
+
+/*
+#include <stdio.h>
+#include <string.h>
+
+char firstNonRepeating(char* str) {
+    int count[256] = {0}; // Assuming ASCII characters
+
+    // First pass: count frequencies
+    for (int i = 0; str[i] != '\0'; i++) {
+        count[(unsigned char)str[i]]++;
+    }
+
+    // Second pass: find the first character with count 1
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (count[(unsigned char)str[i]] == 1) {
+            return str[i];
+        }
+    }
+
+    return '\0'; // No non-repeating character found
+}
+
+int main() {
+    char str[] = "leetcode";
+    char result = firstNonRepeating(str);
+
+    if (result != '\0') {
+        printf("First non-repeating character: %c\n", result); // Output: l
+    } else {
+        printf("No non-repeating character found\n");
+    }
+
+    return 0;
+}
+*/  
+
+
 
 
  2. Binary to Decimal Conversion
@@ -3147,6 +3099,7 @@ int removeDuplicatesSorted(int arr[], int n) {
    5. Move all zeros to the end, keep order [Easy] O(n)/O(1)
    Two-pointer: writeIdx tracks next non-zero slot.
    --------------------------------------------------------- */
+
 void moveZerosToEnd(int arr[], int n) {
     int writeIdx = 0;
 
